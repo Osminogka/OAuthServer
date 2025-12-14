@@ -1,21 +1,42 @@
 ﻿@using Microsoft.Extensions.Primitives
 @using OAuthServer.ViewModels.Authorization
 @model AuthorizeViewModel
+@{
+    Layout = "_Layout";
+}
 
-<div class="jumbotron">
-    <h1>Authorization</h1>
 
-    <p class="lead text-left">Do you want to grant <strong>@Model.ApplicationName</strong> access to your data? (scopes requested: @Model.Scope)</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h2 class="card-title mb-4">Authorization Request</h2>
+                    <p class="card-text mb-4">
+                        Do you want to grant
+                        <strong>@Model.ApplicationName</strong> access to your data?
+                    </p>
+                    <p class="text-muted mb-4">Scopes requested: <code>@Model.Scope</code></p>
 
-    <form asp-controller="Authorization" asp-action="Authorize" method="post">
-        @* Flow the request parameters so they can be received by the Accept/Reject actions: *@
-        @foreach (var parameter in Context.Request.HasFormContentType ?
-        (IEnumerable<KeyValuePair<string, StringValues>>)Context.Request.Form : Context.Request.Query)
-        {
-            <input type="hidden" name="@parameter.Key" value="@parameter.Value" />
-        }
+                    <form asp-controller="Authorization" asp-action="Authorize" method="post">
+                        @* Preserve all request parameters *@
+                        @foreach (var parameter in Context.Request.HasFormContentType ?
+                        (IEnumerable<KeyValuePair<string, StringValues>>)Context.Request.Form : Context.Request.Query)
+                        {
+                            <input type="hidden" name="@parameter.Key" value="@parameter.Value" />
+                        }
 
-        <input class="btn btn-lg btn-success" name="submit.Accept" type="submit" value="Yes" />
-        <input class="btn btn-lg btn-danger" name="submit.Deny" type="submit" value="No" />
-    </form>
+                        <div class="d-flex justify-content-center gap-3">
+                            <button type="submit" name="submit.Accept" class="btn btn-success btn-lg">
+                                Yes
+                            </button>
+                            <button type="submit" name="submit.Deny" class="btn btn-danger btn-lg">
+                                No
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
